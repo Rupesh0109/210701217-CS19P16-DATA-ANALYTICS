@@ -1,6 +1,4 @@
-## Installing Hadoop for Running Word Count MapReduce Program
-
-This guide outlines the steps to install a single-node Hadoop cluster for running a basic word count program using MapReduce.
+## Installing Hadoop
 
 **Prerequisites:**
 
@@ -58,8 +56,4 @@ This guide outlines the steps to install a single-node Hadoop cluster for runnin
    hadoop version
    ```
 
-   These commands should display the installed Java and Hadoop versions respectively, indicating successful installation.
 
-**Next Steps:**
-
-Once you've installed and configured Hadoop, you can proceed with the instructions provided in the original document to create your data file, write the MapReduce program (`mapper.py` and `reducer.py`), and run the Word Count job. The document outlines the steps for using the `hadoop jar` command and `hdfs dfs` commands to interact with HDFS and execute the MapReduce program on your single-node Hadoop cluster.

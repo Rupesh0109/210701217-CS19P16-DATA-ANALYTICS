@@ -1,88 +1,65 @@
-# Running a Basic Word Count MapReduce Program on Hadoop
+## Installing Hadoop for Running Word Count MapReduce Program
 
-This document outlines the steps involved in running a basic word count program using Hadoop's MapReduce framework. It serves as a practical introduction to the MapReduce paradigm.
+This guide outlines the steps to install a single-node Hadoop cluster for running a basic word count program using MapReduce.
 
-## Objectives
+**Prerequisites:**
 
-- Understand the MapReduce processing model.
-- Implement a simple Word Count program using Python.
-- Run the program on a single-node Hadoop cluster.
+* Operating System: Linux (Recommended) - While alternatives like Windows with Cygwin exist, Linux provides a more straightforward installation process.
+* Java Development Kit (JDK): Ensure you have a compatible Java version installed. Check the official Hadoop documentation for supported versions.
 
-## Procedure
+**Installation Steps:**
 
-### 1. Create Data File:
+1. **Download Hadoop:**
 
-Start by creating a text file named `word_count_data.txt` containing sample text. Here's an example:
+   * Visit the Apache Software Foundation's Hadoop download page: [https://hadoop.apache.org/releases.html](https://hadoop.apache.org/releases.html)
+   * Download a recent stable release of the pre-built binary package for your chosen Linux distribution.
 
-Hadoop is a framework that allows for distributed processing of large data sets.
+2. **Extract the Archive:**
 
-python
-Copy code
+   * Open a terminal window and navigate to the directory where you downloaded the Hadoop archive.
+   * Use an appropriate command based on the archive format (e.g., tar or zip) to extract the files.
+   * Common commands:
+     * `tar -xvf hadoop-<version>.tar.gz`
+     * `unzip hadoop-<version>.zip`
 
-### 2. Write the Mapper Program (`mapper.py`):
+3. **Configure Environment Variables:**
 
-This Python script reads lines of text as input and emits each word as a key-value pair, where the value is 1 (representing the occurrence of the word).
+   * Edit your shell configuration file (e.g., `.bashrc` for Bash).
+   * Add the following lines, replacing `<hadoop_installation_directory>` with the actual path where you extracted Hadoop:
 
-```python
-import sys
+   ```bash
+   export JAVA_HOME=/usr/lib/jvm/java-X.X  # Replace X.X with your Java version
+   export HADOOP_INSTALL=/path/to/hadoop-<version>
+   export PATH=$PATH:$HADOOP_INSTALL/bin:$HADOOP_INSTALL/sbin
+   export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+   export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+   export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+   export YARN_HOME=$HADOOP_INSTALL
+   ```
 
-for line in sys.stdin:
-    line = line.strip()
-    words = line.split()
-    for word in words:
-        print(f"{word}\t1")
-3. Write the Reducer Program (reducer.py):
-The reducer aggregates the key-value pairs received from the mapper. It sums the occurrences of each unique word and outputs the word and its total count.
+   * Save and source the configuration file to apply changes:
 
-import sys
+   ```bash
+   source ~/.bashrc
+   ```
 
-current_word = None
-current_count = 0
-word = None
+4. **Verify Installation:**
 
-for line in sys.stdin:
-    line = line.strip()
-    word, count = line.split('\\t', 1)
-    try:
-        count = int(count)
-    except ValueError:
-        continue
+   * Open a new terminal window to ensure environment variables are loaded correctly.
+   * Check Java installation:
 
-    if current_word == word:
-        current_count += count
-    else:
-        if current_word:
-            print(f"{current_word}\\t{current_count}")
-        current_count = count
-        current_word = word
+   ```bash
+   java -version
+   ```
 
-if current_word == word:
-    print(f"{current_word}\\t{current_count}")
-4. Set Up Hadoop Environment:
-Create an input directory in HDFS to store your data file:
+   * Verify Hadoop installation:
 
-bash
-Copy code
-hdfs dfs -mkdir /word_count_input
-Upload the data file to the HDFS input directory:
+   ```bash
+   hadoop version
+   ```
 
-bash
-Copy code
-hdfs dfs -copyFromLocal word_count_data.txt /word_count_input
-5. Run the Word Count Program:
-Use the hadoop jar command with the hadoop-streaming library to execute the MapReduce job:
+   These commands should display the installed Java and Hadoop versions respectively, indicating successful installation.
 
-bash
-Copy code
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \\
--input /word_count_input/word_count_data.txt \\
--output /word_count_output \\
--mapper mapper.py \\
--reducer reducer.py
-6. Verify the Output:
-Use the hdfs dfs -cat command to view the results stored in the output directory:
+**Next Steps:**
 
-bash
-Copy code
-hdfs dfs -cat /word_count_output/part-00000
-```
+Once you've installed and configured Hadoop, you can proceed with the instructions provided in the original document to create your data file, write the MapReduce program (`mapper.py` and `reducer.py`), and run the Word Count job. The document outlines the steps for using the `hadoop jar` command and `hdfs dfs` commands to interact with HDFS and execute the MapReduce program on your single-node Hadoop cluster.
